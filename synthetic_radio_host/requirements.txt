@@ -1,0 +1,9 @@
+groq
+edge-tts
+python-dotenv
+requests
+pydub
+ipykernel
+fastapi
+uvicorn[standard]
+python-multipart

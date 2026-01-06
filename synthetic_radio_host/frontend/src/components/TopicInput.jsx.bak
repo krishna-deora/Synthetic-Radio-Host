@@ -1,0 +1,60 @@
+import React, { useState } from 'react';
+
+const TopicInput = ({ onGenerate, isProcessing }) => {
+    const [topic, setTopic] = useState('');
+    const [isFocused, setIsFocused] = useState(false);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (topic.trim()) {
+            onGenerate(topic);
+        }
+    };
+
+    return (
+        <div className="glass-card slide-up" style={{ animationDelay: '0.2s' }}>
+            <form onSubmit={handleSubmit}>
+                <div style={{ marginBottom: 'var(--spacing-lg)' }}>
+                    <label style={{ 
+                        display: 'block', 
+                        marginBottom: 'var(--spacing-sm)', 
+                        fontWeight: 600,
+                        fontSize: '1.1rem',
+                        color: 'var(--text-primary)',
+                        transition: 'all var(--transition-base)',
+                        transform: isFocused || topic ? 'translateY(0)' : 'translateY(0)'
+                    }}>
+                        What do you want to listen to?
+                    </label>
+                    <input
+                        type="text"
+                        className="input-field"
+                        placeholder="e.g., Black Holes, Mumbai, Quantum Physics"
+                        value={topic}
+                        onChange={(e) => setTopic(e.target.value)}
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
+                        disabled={isProcessing}
+                        style={{
+                            transition: 'all var(--transition-base)'
+                        }}
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    className="btn-primary"
+                    disabled={!topic.trim() || isProcessing}
+                    style={{
+                        transition: 'all var(--transition-base)',
+                        opacity: (!topic.trim() || isProcessing) ? 0.6 : 1
+                    }}
+                >
+                    {isProcessing ? 'Thinking...' : 'Generate Podcast ✨'}
+                </button>
+            </form>
+        </div>
+    );
+};
+
+export default TopicInput;

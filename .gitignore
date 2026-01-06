@@ -1,0 +1,32 @@
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Environment variables
+.env
+.env.local
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.vscode/
+.cursor/
+.idea/
+
+# Output files (optional - uncomment if you don't want to track output)
+# output/
+
+# Logs
+*.log
