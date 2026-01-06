@@ -59,9 +59,26 @@ This guide explains how to deploy your **JavaScript/React Frontend** and **Pytho
 3. If it fails, check the browser console (F12 -> Console) and the Render logs for the Backend service.
 
 ### Troubleshooting
+- **404 Not Found on Frontend**: 
+  - Check your **Root Directory**: It MUST be `synthetic_radio_host/frontend`.
+  - Check your **Publish Directory**: It MUST be `dist`.
+  - If you set Root Directory to `.` (default), you must change Publish Directory to `synthetic_radio_host/frontend/dist`.
 - **CORS Errors**: The backend is configured to accept requests from anywhere (`*`), so this shouldn't be an issue.
-- **404 Errors**: Ensure your `VITE_API_URL` was set correctly without a trailing slash (e.g. `...onrender.com`, NOT `...onrender.com/`).
-- **Build Fails**: Check if you pointed to the correct Root Directories (`synthetic_radio_host` for backend, `synthetic_radio_host/frontend` for frontend).
+- **404 Errors on API**: Ensure your `VITE_API_URL` environment variable does NOT have a trailing slash.
+
+---
+
+## Option 2: Automatic Deployment (Blueprint) - Recommended
+
+I have added a `render.yaml` file to the repository. This allows you to deploy everything automatically without manual configuration errors.
+
+1. Go to Render Dashboard.
+2. Click **New +** -> **Blueprint**.
+3. Select your repository.
+4. Render will detect the `render.yaml` file.
+5. It will ask for `GROQ_API_KEY`. Enter it.
+6. Click **Apply**.
+7. Sit back and wait! It will creating both services and link them automatically.
 
 ### Note on Free Tier
 Render's free backend spins down after 15 minutes of inactivity. The first request after a while might take 30-50 seconds to respond as the server wakes up. Ideally, mention this on your UI or keep it warm (though automated keeping warm is against free tier policies).

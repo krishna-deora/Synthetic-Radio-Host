@@ -1,0 +1,33 @@
+services:
+  # Backend Service
+  - type: web
+    name: radio-host-api
+    env: python
+    plan: free
+    rootDir: synthetic_radio_host
+    buildCommand: pip install -r requirements.txt
+    startCommand: python server.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: GROQ_API_KEY
+        sync: false # You will be prompted to enter this in the dashboard
+
+  # Frontend Service
+  - type: static
+    name: radio-host-app
+    env: static
+    plan: free
+    rootDir: synthetic_radio_host/frontend
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: radio-host-api
+          property: url
