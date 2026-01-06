@@ -406,6 +406,30 @@ graph LR
   - Visual waveform animation
   - Speaker emoji indicators (👨 Amit, 👩‍🦰 Priya)
 
+#### 6. **EvaluationScoreCard.jsx** - Quality Evaluation Display ⭐ NEW
+- **Purpose**: Shows AI evaluation results and feedback
+- **Features**:
+  - Overall score display with color-coded rating
+  - Category-wise breakdown (5 categories)
+  - Individual category scores (1-5 scale)
+  - Strengths highlighted
+  - Areas for improvement listed
+  - Specific suggestions provided
+  - Visual score indicators (stars/ratings)
+  - Expandable/collapsible categories
+
+#### 7. **ImprovementPromptCard.jsx** - Improvement Suggestions ⭐ NEW
+- **Purpose**: Displays AI-generated improvement prompts
+- **Features**:
+  - Generated improvement prompt display
+  - Copy-to-clipboard functionality
+  - Focus areas highlighted
+  - Target score indicators
+  - AI-IDE ready format
+  - One-click copy button
+  - Success toast notification
+  - Markdown-style formatting
+
 ### Backend Components
 
 #### 1. **server.py** - FastAPI Backend Server
@@ -471,7 +495,143 @@ graph LR
   1. Fetch Wikipedia content (0-8%)
   2. Generate script (8-30%)
   3. Synthesize audio (30-100%)
-  4. Return output file path
+  4. Evaluate podcast quality (after synthesis)
+  5. Generate improvement prompts (if needed)
+  6. Return output file path and evaluation results
+
+#### 3. **evaluator.py** - AI Podcast Quality Evaluator
+
+**Purpose**: Uses Mixtral 8x7B as a critic LLM to evaluate generated podcast scripts for human-like quality.
+
+**Key Functions**:
+
+##### `evaluate_podcast_script(script, api_key)`
+- Evaluates podcast script on 5 key dimensions
+- **Uses**: Mixtral 8x7B Instruct (different from generation model)
+- **Returns**: Comprehensive evaluation with scores and feedback
+
+**Evaluation Categories**:
+1. **Hinglish Quality** (25% weight)
+   - Code-mixing naturalness
+   - Roman Hindi vs English balance
+   - Authentic expressions usage
+   
+2. **Conversational Naturalness** (30% weight)
+   - Dialogue flow and transitions
+   - Interruptions and reactions
+   - Spontaneous speech patterns
+   
+3. **Emotional Expression** (20% weight)
+   - Mood variety (excitement, laughter, curiosity)
+   - Tone appropriateness
+   - Emotional authenticity
+   
+4. **Content Coherence** (15% weight)
+   - Topic progression clarity
+   - Information accuracy
+   - Logical flow
+   
+5. **Host Chemistry** (10% weight)
+   - Interaction dynamics
+   - Personality distinction
+   - Engagement level
+
+**Scoring System**:
+- Each category scored 1-5 (5 being best)
+- Overall score calculated using weighted average
+- Score labels: Excellent (4.5+), Great (4.0-4.5), Good (3.5-4.0), Needs Work (3.0-3.5), Poor (<3.0)
+
+**Output Format**:
+```python
+{
+    "overall_score": 4.2,
+    "score_label": "Great",
+    "categories": {
+        "hinglish_quality": {"score": 4.0, "feedback": "..."},
+        "conversational_naturalness": {"score": 4.5, "feedback": "..."},
+        # ... other categories
+    },
+    "strengths": ["Natural flow", "Good chemistry"],
+    "areas_for_improvement": ["More emotional variety"],
+    "specific_suggestions": ["Add more laughter moments"]
+}
+```
+
+##### `generate_evaluation_prompt(script)`
+- Creates detailed prompt for Mixtral critic
+- Includes specific scoring rubrics
+- Defines red flags for low scores (e.g., consecutive fillers)
+
+##### `calculate_overall_score(categories)`
+- Applies weighted average to category scores
+- Returns final 1-5 score
+
+##### `format_evaluation_summary(evaluation)`
+- Formats evaluation into human-readable text
+- Used for console output and logging
+
+#### 4. **prompt_generator.py** - AI Improvement Prompt Generator
+
+**Purpose**: Generates actionable improvement prompts for AI IDEs based on evaluation results.
+
+**Key Functions**:
+
+##### `generate_improvement_prompt(evaluation, api_key)`
+- Creates detailed, AI-IDE-ready improvement prompts
+- **Uses**: GPT-OSS 120B (DeepSeek model) - third unique LLM
+- **Focuses on**: Low-scoring categories (<4.0)
+- **Returns**: Structured prompt with specific code changes
+
+**Prompt Structure**:
+```xml
+<task>
+  <objective>Improve podcast naturalness</objective>
+  <focus_areas>
+    - Specific low-scoring categories
+    - Actionable code changes needed
+  </focus_areas>
+</task>
+
+<current_state>
+  - Current scores and issues
+  - Specific problems identified
+</current_state>
+
+<requirements>
+  - Maintain existing strengths
+  - Address specific weaknesses
+  - Code-level modifications
+</requirements>
+```
+
+**Key Features**:
+- Generic and reusable prompts
+- Specific file targets (main.py, evaluator.py, etc.)
+- Actionable code suggestions
+- Maintains existing strengths
+- Focuses on data-driven improvements
+
+**Output Format**:
+```python
+{
+    "prompt": "Detailed AI-IDE improvement prompt...",
+    "metadata": {
+        "focus_areas": ["emotional_expression", "filler_usage"],
+        "target_score": 4.0,
+        "model_used": "deepseek-r1-distill-llama-70b"
+    }
+}
+```
+
+##### `generate_improvement_prompt_template(evaluation)`
+- Creates base template from evaluation
+- Identifies focus areas
+- Prioritizes improvements
+
+**Three-LLM Architecture**:
+1. **Llama 3.3 70B**: Primary podcast script generation
+2. **Mixtral 8x7B**: Quality evaluation (critic)
+3. **GPT-OSS 120B**: Improvement prompt creation (meta-prompter)
 
 ---
 
@@ -528,7 +688,9 @@ graph LR
 - **Async**: asyncio for concurrent operations
 
 ### External Services
-- **LLM**: Groq API (Llama 3.3 70B Versatile)
+- **LLM (Script Generation)**: Groq API - Llama 3.3 70B Versatile
+- **LLM (Evaluation)**: Groq API - Mixtral 8x7B Instruct
+- **LLM (Prompt Generation)**: Groq API - GPT-OSS 120B (DeepSeek R1 Distill Llama 70B)
 - **TTS**: Microsoft Edge TTS
 - **Content**: Wikipedia API
 - **Audio Format**: MP3
@@ -546,7 +708,7 @@ graph LR
 ## ✨ Key Features
 
 ### 1. **Gen-Z Hinglish Style**
-- 60% Hindi (Roman script) + 40% English
+- 70% Hindi (Roman script) + 30% English
 - High-energy, fast-paced dialogue
 - College canteen vibes
 - Reactive logic (interruptions, agreements, slang)
@@ -557,36 +719,58 @@ graph LR
 - Different prosody settings for each voice
 
 ### 3. **Natural Speech Patterns**
-- 25+ filler words (varied to avoid repetition)
-- Context-appropriate fillers
+- Contextual filler words (30-40% of sentences, max one per sentence)
+- Context-appropriate fillers (attention, agreement, emphasis)
 - Pronunciation fixes (Devanagari conversion)
 - Prosody variations (rate, pitch)
+- Emotional tones: [laughs], [playful], [excited], [thoughtful]
 
-### 4. **Real-Time Progress Tracking**
+### 4. **AI Evaluation System** ⭐ NEW
+- **Mixtral 8x7B Critic**: Evaluates podcast quality on 5 categories
+  - Hinglish Quality (25% weight)
+  - Conversational Naturalness (30% weight)
+  - Emotional Expression (20% weight)
+  - Content Coherence (15% weight)
+  - Host Chemistry (10% weight)
+- Detailed scoring breakdown with strengths and areas for improvement
+- Overall score calculation (1-5 scale)
+
+### 5. **Improvement Prompt Generator** ⭐ NEW
+- **GPT-OSS 120B Generator**: Creates actionable improvement prompts
+- Analyzes low-scoring categories from evaluation
+- Generates specific code modification suggestions
+- AI-IDE ready prompts for iterative enhancement
+- Uses different LLM than generation (DeepSeek R1 Distill Llama 70B)
+
+### 6. **Real-Time Progress Tracking**
 - Backend progress updates (0-100%)
 - Frontend polling (1-second intervals)
 - Dynamic status messages
 - Smooth progress animation
+- Stage-wise progress reporting
 
-### 5. **Error Handling**
+### 7. **Error Handling**
 - Wikipedia topic validation
 - API error handling
 - User-friendly error messages
 - Persistent error state (doesn't disappear)
+- SSL bypass for development
 
-### 6. **Audio Features**
-- High-quality TTS synthesis
-- Variable speech rates
-- Pitch adjustments
+### 8. **Audio Features**
+- High-quality TTS synthesis (Microsoft Edge TTS)
+- Variable speech rates (1x to 4x)
+- Pitch adjustments per speaker
 - MP3 output format
 - Binary concatenation (no external dependencies)
 
-### 7. **User Experience**
+### 9. **User Experience**
 - Glassmorphism UI design
-- Rajasthani theme/branding
-- Fun facts during generation
+- Modern, premium aesthetic with vibrant colors
 - Audio player with speed control
 - Download functionality
+- Topic autocomplete (Wikipedia integration)
+- Evaluation score display
+- Copyable improvement prompts
 
 ---
 
