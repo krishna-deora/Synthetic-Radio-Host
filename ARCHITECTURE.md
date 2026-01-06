@@ -75,10 +75,10 @@ graph TB
     end
     
     subgraph "Backend API Layer"
-        H[FastAPI Server] --> I[/api/generate]
-        H --> J[/api/status/:job_id]
-        H --> K[/api/download/:filename]
-        H --> L[/api/wikipedia/suggest]
+        H[FastAPI Server] --> I["POST /api/generate"]
+        H --> J["GET /api/status/:job_id"]
+        H --> K["GET /api/download/:filename"]
+        H --> L["GET /api/wikipedia/suggest"]
         H --> M[Job Manager]
     end
     
@@ -103,9 +103,9 @@ graph TB
         AB[Edge TTS]
     end
     
-    C -->|POST /api/generate| I
-    D -->|GET /api/status| J
-    E -->|GET /api/download| K
+    C --> I
+    D --> J
+    E --> K
     I -->|Background Task| N
     N -->|Fetch Content| X
     N -->|Generate Script| Y
