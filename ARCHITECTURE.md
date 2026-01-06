@@ -97,9 +97,9 @@ graph TB
     
     subgraph "External Services"
         X[Wikipedia API]
-        Y[Groq API<br/>Llama 3.3 70B]
-        Z[Groq API<br/>Mixtral 8x7B]
-        AA[Groq API<br/>DeepSeek R1]
+        Y["Groq API - Llama 3.3 70B"]
+        Z["Groq API - Mixtral 8x7B"]
+        AA["Groq API - DeepSeek R1"]
         AB[Edge TTS]
     end
     
