@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 
+// Get API base URL from environment variables
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+
 const TopicInput = ({ onGenerate, isProcessing }) => {
     const [topic, setTopic] = useState('');
     const [isFocused, setIsFocused] = useState(false);
@@ -22,7 +25,7 @@ const TopicInput = ({ onGenerate, isProcessing }) => {
 
         setIsLoading(true);
         try {
-            const response = await fetch(`/api/wikipedia/suggest?query=${encodeURIComponent(query)}`);
+            const response = await fetch(`${API_BASE_URL}/api/wikipedia/suggest?query=${encodeURIComponent(query)}`);
             if (response.ok) {
                 const data = await response.json();
                 setSuggestions(data.suggestions || []);

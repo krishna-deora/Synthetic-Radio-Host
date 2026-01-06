@@ -181,4 +181,7 @@ if __name__ == "__main__":
     import uvicorn
     # Create output directory if it doesn't exist
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    
+    # Get port from environment variable (required for Render)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)

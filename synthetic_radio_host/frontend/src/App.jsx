@@ -7,6 +7,10 @@ import AudioPlayer from './components/AudioPlayer';
 import EvaluationScoreCard from './components/EvaluationScoreCard';
 import ImprovementPromptCard from './components/ImprovementPromptCard';
 
+// Get API base URL from environment variables (for production)
+// In development, this will be empty and requests will be proxied
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+
 function App() {
   const [status, setStatus] = useState('idle'); // idle, processing, completed, failed
   const [message, setMessage] = useState('');
@@ -49,7 +53,7 @@ function App() {
       }
       setCurrentTopic(topic);
 
-      const response = await fetch('/api/generate', {
+      const response = await fetch(`${API_BASE_URL}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic }),
@@ -102,7 +106,7 @@ function App() {
         // CRITICAL: Check status before proceeding - if already failed/completed, stop immediately
         // This prevents race conditions where status changed but callback is still executing
         try {
-          const res = await fetch(`/api/status/${jobId}`);
+          const res = await fetch(`${API_BASE_URL}/api/status/${jobId}`);
           if (!res.ok) {
             shouldPollRef.current = false;
             if (pollingRef.current) {
@@ -141,7 +145,7 @@ function App() {
               pollingRef.current = null;
             }
             setStatus('completed');
-            setAudioUrl(`/api/download/${data.filename}`);
+            setAudioUrl(`${API_BASE_URL}/api/download/${data.filename}`);
             // Capture evaluation results from API response
             if (data.evaluation) {
               setEvaluation(data.evaluation);
