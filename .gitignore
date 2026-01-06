@@ -1,8 +1,14 @@
+# ===========================
+# Python
+# ===========================
+
 # Virtual environments
 .venv/
 venv/
 env/
 ENV/
+env.bak/
+venv.bak/
 
 # Python cache
 __pycache__/
@@ -11,22 +17,136 @@ __pycache__/
 *.so
 .Python
 
-# Environment variables
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ===========================
+# Node.js / Frontend
+# ===========================
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Production build
+dist/
+build/
+
+# Vite
+.vite/
+*.local
+
+# ===========================
+# Environment Variables
+# ===========================
+
 .env
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# macOS system files
+# ===========================
+# IDEs and Editors
+# ===========================
+
+# VS Code
+.vscode/
+
+# Cursor
+.cursor/
+
+# PyCharm / IntelliJ
+.idea/
+*.iml
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# ===========================
+# Operating System Files
+# ===========================
+
+# macOS
 .DS_Store
 .AppleDouble
 .LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
 
-# IDE
-.vscode/
-.cursor/
-.idea/
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
 
-# Output files (optional - uncomment if you don't want to track output)
-# output/
+# Linux
+*~
+.directory
+
+# ===========================
+# Project Specific
+# ===========================
+
+# Generated podcasts (optional - uncomment to ignore output files)
+# synthetic_radio_host/output/*.mp3
+
+# Backup files
+*.bak
+*.swp
+*.swo
+*~
 
 # Logs
 *.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# ===========================
+# Git
+# ===========================
+
+*.orig
+*.rej
+
+# ===========================
+# Documentation (keep these tracked)
+# ===========================
+
+# We want to track:
+# - README.md
+# - ARCHITECTURE.md
+# - API_REFERENCE.md
+# - CONTRIBUTING.md
+# - CHANGELOG.md
+# - LICENSE
+
