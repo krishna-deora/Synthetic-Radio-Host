@@ -8,6 +8,7 @@
 [![React](https://img.shields.io/badge/React-18.3-61dafb.svg)](https://reactjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-Latest-009688.svg)](https://fastapi.tiangolo.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/krishna-deora/Synthetic-Radio-Host)
 
 **A cutting-edge AI pipeline that converts any Wikipedia topic into natural-sounding Hinglish podcast conversations featuring two Gen-Z AI hosts (RJ Priya and RJ Amit) with authentic Indian conversational flair.**
 
